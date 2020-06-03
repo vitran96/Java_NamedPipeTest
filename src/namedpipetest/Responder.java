@@ -9,7 +9,22 @@ public final class Responder {
     public void DoServices(DataTransfer dataTransfer) {
         try {
             while (!isStopped) {
-                //
+                byte[] receiveData = dataTransfer.ReceiveData();
+                String message = ByteUtil.Bytes2String(receiveData);
+
+                System.out.println("Message to server: " + message);
+
+                byte[] replyData;
+
+                if (message.equals("Hello Server!")) {
+                    replyData = ByteUtil.String2Bytes("Hi Client!");
+                } else if (message.equals("end")) {
+                    isStopped = true;
+                    replyData = ByteUtil.String2Bytes("Bye!");
+                } else
+                    replyData = ByteUtil.String2Bytes("Says some thing!!");
+
+                dataTransfer.SendData(replyData);
             }
         } catch (java.lang.Exception ex) {
             this.isStopped = true;

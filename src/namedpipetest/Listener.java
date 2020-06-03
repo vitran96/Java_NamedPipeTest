@@ -4,61 +4,73 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT;
 
+import java.util.function.Consumer;
+
 public final class Listener {
-    private Server server;
+//    private Server server;
     private String pipeName;
-    private Responder responder;
+//    private Responder responder;
     java.lang.Thread thread;
     java.lang.Thread thread1;
 
+    private Consumer<DataTransfer> callback;
+
     public Listener(Server server, String pipeName, Responder responder) {
-        this.server = server;
+//        this.server = server;
         this.pipeName = pipeName;
-        this.responder = responder;
+//        this.responder = responder;
+    }
+
+    public Listener(String pipeName, Consumer<DataTransfer> callback) {
+        this.pipeName = pipeName;
+        this.callback = callback;
     }
 
     public void Listen() {
         String name = "\\\\.\\pipe\\" + pipeName;
-        WinNT.HANDLE hNamedPipe = Kernel32.INSTANCE.CreateNamedPipe(name,
-            WinBase.PIPE_ACCESS_DUPLEX,        // dwOpenMode
+        WinNT.HANDLE hNamedPipe = Kernel32.INSTANCE.CreateNamedPipe(
+            name,
+            WinBase.PIPE_ACCESS_DUPLEX,                   // dwOpenMode
             WinBase.PIPE_TYPE_BYTE | WinBase.PIPE_READMODE_BYTE | WinBase.PIPE_WAIT,    // dwPipeMode
-            1,    // nMaxInstances,
-            Byte.MAX_VALUE,    // nOutBufferSize,
-            Byte.MAX_VALUE,    // nInBufferSize,
-            0,    // nDefaultTimeOut,
-            null);    // lpSecurityAttributes
+            1,                                        // nMaxInstances,
+            Byte.MAX_VALUE,                               // nOutBufferSize,
+            Byte.MAX_VALUE,                               // nInBufferSize,
+            0,                                        // nDefaultTimeOut,
+            null                          // lpSecurityAttributes
+        );
+
         if (!WinBase.INVALID_HANDLE_VALUE.equals(hNamedPipe)) {
             Kernel32.INSTANCE.ConnectNamedPipe(hNamedPipe, null);
         }
 
-        this.CreateRequester();
-
-        thread = new Thread(() -> {
-            responder.DoServices(new DataTransfer(hNamedPipe));
-        });
-
+        DataTransfer dataTransfer = new DataTransfer(hNamedPipe);
+        thread = new Thread(() -> callback.accept(dataTransfer));
         thread.setDaemon(true);
+        thread.setName("Listener Thread");
         thread.start();
     }
 
     public void Stop() {
-
+        // TODO: ???
     }
 
     private void CreateRequester() {
         String name = "\\\\.\\pipe\\requester" + pipeName;
-        WinNT.HANDLE hNamedPipe = Kernel32.INSTANCE.CreateNamedPipe(name,
+        WinNT.HANDLE hNamedPipe = Kernel32.INSTANCE.CreateNamedPipe(
+            name,
             WinBase.PIPE_ACCESS_DUPLEX,        // dwOpenMode
             WinBase.PIPE_TYPE_BYTE | WinBase.PIPE_READMODE_BYTE | WinBase.PIPE_WAIT,    // dwPipeMode
             1,    // nMaxInstances,
             Byte.MAX_VALUE,    // nOutBufferSize,
-            Byte.MAX_VALUE,    // nInBufferSize,
+            Byte.MAX_VALUE,    // nInBufferSize,g
             0,    // nDefaultTimeOut,
-            null);    // lpSecurityAttributes
+            null     // lpSecurityAttributes
+        );
+
         if (!WinBase.INVALID_HANDLE_VALUE.equals(hNamedPipe)) {
             Kernel32.INSTANCE.ConnectNamedPipe(hNamedPipe, null);
         }
 
-        server.Connected(new DataTransfer(hNamedPipe));
+//        server.Connected(new DataTransfer(hNamedPipe));
     }
 }
