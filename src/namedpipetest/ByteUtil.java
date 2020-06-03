@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
 public final class ByteUtil {
-    public static byte[] toByteArrayWithLittleEndian(int value) {
+    public static byte[] intToBytes(int value) {
         ByteBuffer buffer = ByteBuffer.allocate(4);
         buffer.order(ByteOrder.LITTLE_ENDIAN);// default is BIG_ENDIAN
         buffer.putInt(value);

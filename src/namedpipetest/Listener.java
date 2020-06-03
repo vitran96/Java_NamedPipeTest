@@ -4,6 +4,7 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT;
 
+import java.io.FileNotFoundException;
 import java.util.function.Consumer;
 
 public final class Listener {
@@ -15,6 +16,7 @@ public final class Listener {
 
     private Consumer<DataTransfer> callback;
 
+    @Deprecated
     public Listener(Server server, String pipeName, Responder responder) {
 //        this.server = server;
         this.pipeName = pipeName;
@@ -22,14 +24,14 @@ public final class Listener {
     }
 
     public Listener(String pipeName, Consumer<DataTransfer> callback) {
-        this.pipeName = pipeName;
+        this.pipeName = "\\\\.\\pipe\\" + pipeName;
         this.callback = callback;
     }
 
-    public void Listen() {
-        String name = "\\\\.\\pipe\\" + pipeName;
+    public void Listen() throws FileNotFoundException {
+//        String name = "\\\\.\\pipe\\" + pipeName;
         WinNT.HANDLE hNamedPipe = Kernel32.INSTANCE.CreateNamedPipe(
-            name,
+            pipeName,
             WinBase.PIPE_ACCESS_DUPLEX,                   // dwOpenMode
             WinBase.PIPE_TYPE_BYTE | WinBase.PIPE_READMODE_BYTE | WinBase.PIPE_WAIT,    // dwPipeMode
             1,                                        // nMaxInstances,
@@ -39,11 +41,12 @@ public final class Listener {
             null                          // lpSecurityAttributes
         );
 
-        if (!WinBase.INVALID_HANDLE_VALUE.equals(hNamedPipe)) {
-            Kernel32.INSTANCE.ConnectNamedPipe(hNamedPipe, null);
-        }
+//        if (!WinBase.INVALID_HANDLE_VALUE.equals(hNamedPipe)) {
+//            Kernel32.INSTANCE.ConnectNamedPipe(hNamedPipe, null);
+//        }
 
-        DataTransfer dataTransfer = new DataTransfer(hNamedPipe);
+//        DataTransfer dataTransfer = new DataTransfer(hNamedPipe);
+        DataTransfer dataTransfer = new DataTransfer(this.pipeName);
         thread = new Thread(() -> callback.accept(dataTransfer));
         thread.setDaemon(true);
         thread.setName("Listener Thread");
