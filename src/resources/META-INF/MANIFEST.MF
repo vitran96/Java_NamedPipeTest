@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: namedpipetest.Main
+Class-Path: jna-platform-5.5.0.jar jna-5.5.0.jar
+

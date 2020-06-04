@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact name="namedpipe_test:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/namedpipe_test_jar</output-path>
+    <root id="root">
+      <element id="archive" name="namedpipe_test.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/src/resources/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="namedpipe_test" />
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/libs/jna/jna-platform-5.5.0.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/libs/jna/jna-5.5.0.jar" />
+    </root>
+  </artifact>
+</component>
