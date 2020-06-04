@@ -7,7 +7,7 @@ echo "Make 'out' dir"
 mkdir out
 
 echo "Find and set all *.java files to 'files'"
-ls -d src/namedpipetest/* > files.txt
+ls -d src/namedpipetest/* > files
 echo $files
 
 echo "Complie *.java"
