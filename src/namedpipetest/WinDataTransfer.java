@@ -4,11 +4,11 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.ptr.IntByReference;
 
-public class ListenerWinDataTransfer implements DataTransfer {
+public class WinDataTransfer implements DataTransfer {
 
     private WinNT.HANDLE pipe;
 
-    public ListenerWinDataTransfer(WinNT.HANDLE pipe) {
+    public WinDataTransfer(WinNT.HANDLE pipe) {
         this.pipe = pipe;
     }
 

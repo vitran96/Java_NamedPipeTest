@@ -24,8 +24,6 @@ public class Main {
         listenerThread.setName("Listener thread");
         listenerThread.start();
 
-        Thread.sleep(5000);
-
         Client client = new Client(pipeName);
         client.Connect();
 

@@ -4,8 +4,6 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT;
 
-import javax.xml.crypto.Data;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.function.Consumer;
 
@@ -57,13 +55,16 @@ public final class Listener {
                 Kernel32.INSTANCE.ConnectNamedPipe(hNamedPipe, null);
             }
 
-            dataTransfer = new ListenerWinDataTransfer(hNamedPipe);
+            dataTransfer = new WinDataTransfer(hNamedPipe);
         } else {
             System.out.println("Linux FIFO.");
-            ProcessBuilder processBuilder = new ProcessBuilder("mkfifo", pipeName);
-            processBuilder.start();
+            String pipeNameToSendTo = PipeConstant.SERVER_2_CLIENT_PREFIX + pipeName;
+            String pipeNameToReceiveFrom = PipeConstant.CLIENT_2_SERVER_PREFIX + pipeName;
 
-            dataTransfer = new GenericDataTransfer(pipeName);
+            new ProcessBuilder("mkfifo", pipeNameToSendTo).start();
+            new ProcessBuilder("mkfifo", pipeNameToReceiveFrom).start();
+
+            dataTransfer = new LinuxDataTransfer(pipeNameToSendTo, pipeNameToReceiveFrom);
         }
 
         System.out.println("Pipe listener started!");
