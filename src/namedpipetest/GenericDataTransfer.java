@@ -11,7 +11,7 @@ public class GenericDataTransfer implements DataTransfer {
 //    private WinNT.HANDLE pipe;
 
     private RandomAccessFile file;
-    private static final Object lock = new Object();
+    private final Object lock = new Object();
 
     public GenericDataTransfer(WinNT.HANDLE pipe) {
 //        this.pipe = pipe;
@@ -53,7 +53,7 @@ public class GenericDataTransfer implements DataTransfer {
                 byte[] lengthInBytes = new byte[4];
                 file.read(lengthInBytes, 0, lengthInBytes.length);
 
-                int length = ByteUtil.getIntFromArrayWithLittleEndian(lengthInBytes);
+                int length = ByteUtil.bytesToInt(lengthInBytes);
                 byte[] receiveData = new byte[length];
                 file.read(receiveData, 0, length);
                 result = receiveData;
