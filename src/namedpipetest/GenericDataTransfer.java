@@ -6,14 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class ClientDataTransfer implements DataTransfer {
+public class GenericDataTransfer implements DataTransfer {
 
 //    private WinNT.HANDLE pipe;
 
     private RandomAccessFile file;
     private static final Object lock = new Object();
 
-    public ClientDataTransfer(WinNT.HANDLE pipe) {
+    public GenericDataTransfer(WinNT.HANDLE pipe) {
 //        this.pipe = pipe;
     }
 
@@ -23,7 +23,7 @@ public class ClientDataTransfer implements DataTransfer {
         super.finalize();
     }
 
-    public ClientDataTransfer(String pipeName) throws FileNotFoundException {
+    public GenericDataTransfer(String pipeName) throws FileNotFoundException {
         this.file = new RandomAccessFile(pipeName, "rw");
     }
 

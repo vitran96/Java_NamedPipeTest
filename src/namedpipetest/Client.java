@@ -6,32 +6,14 @@ import java.io.IOException;
 public final class Client {
 
     private String pipeName;
-    private ClientDataTransfer dataTransfer;
+    private GenericDataTransfer dataTransfer;
 
     public Client(String pipeName) {
-        this.pipeName = "\\\\.\\pipe\\" + pipeName;
+        this.pipeName = PipeUtil.MakePipeName(pipeName);
     }
 
     public void Connect() throws FileNotFoundException {
-//        String name = "\\\\.\\pipe\\requester" + pipeName;
-//        String name = "\\\\.\\pipe\\" + pipeName;
-//        WinNT.HANDLE hNamedPipe = Kernel32.INSTANCE.CreateNamedPipe(
-//            pipeName,
-//            WinBase.PIPE_ACCESS_DUPLEX,        // dwOpenMode
-//            WinBase.PIPE_TYPE_BYTE | WinBase.PIPE_READMODE_BYTE | WinBase.PIPE_WAIT,    // dwPipeMode
-//            1,    // nMaxInstances,
-//            Byte.MAX_VALUE,    // nOutBufferSize,
-//            Byte.MAX_VALUE,    // nInBufferSize,g
-//            0,    // nDefaultTimeOut,
-//            null     // lpSecurityAttributes
-//        );
-
-//        if (!WinBase.INVALID_HANDLE_VALUE.equals(hNamedPipe)) {
-//            Kernel32.INSTANCE.ConnectNamedPipe(hNamedPipe, null);
-//        }
-
-//        this.dataTransfer = new DataTransfer(hNamedPipe);
-        this.dataTransfer = new ClientDataTransfer(pipeName);
+        this.dataTransfer = new GenericDataTransfer(pipeName);
     }
 
     public String SendThenReceiveMessage(String sendMessage) throws IOException {

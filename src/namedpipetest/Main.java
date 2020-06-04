@@ -9,7 +9,7 @@ public class Main {
         if (args.length > 0)
             pipeName = args[0];
 
-        int occurrences = 5;
+        int occurrences = 15;
         if (args.length > 1)
             occurrences = Integer.parseInt(args[1]);
 
@@ -19,13 +19,7 @@ public class Main {
         Responder responder = new Responder();
 
         Listener listener = new Listener(pipeName, responder::DoServices);
-        Thread listenerThread = new Thread(() -> {
-            try {
-                listener.Listen();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
+        Thread listenerThread = new Thread(listener::Listen);
         listenerThread.setDaemon(true);
         listenerThread.setName("Listener thread");
         listenerThread.start();

@@ -12,7 +12,7 @@ public final class Responder {
                 byte[] receiveData = dataTransfer.ReceiveData();
                 String message = ByteUtil.Bytes2String(receiveData);
 
-                System.out.println("Message to server: " + message);
+                System.out.println("Message from client: " + message);
 
                 byte[] replyData;
 
@@ -21,6 +21,8 @@ public final class Responder {
                 } else if (message.equals("end")) {
                     isStopped = true;
                     replyData = ByteUtil.String2Bytes("Bye!");
+                } else if (!message.isEmpty()) {
+                    replyData = ByteUtil.String2Bytes("Did you say this: " + message);
                 } else
                     replyData = ByteUtil.String2Bytes("Says some thing!!");
 
