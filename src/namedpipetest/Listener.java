@@ -41,12 +41,14 @@ public final class Listener {
             null                          // lpSecurityAttributes
         );
 
-//        if (!WinBase.INVALID_HANDLE_VALUE.equals(hNamedPipe)) {
-//            Kernel32.INSTANCE.ConnectNamedPipe(hNamedPipe, null);
-//        }
+        if (!WinBase.INVALID_HANDLE_VALUE.equals(hNamedPipe)) {
+            Kernel32.INSTANCE.ConnectNamedPipe(hNamedPipe, null);
+        }
 
-//        DataTransfer dataTransfer = new DataTransfer(hNamedPipe);
-        DataTransfer dataTransfer = new DataTransfer(this.pipeName);
+        System.out.println("Pipe listener started!");
+
+        DataTransfer dataTransfer = new ListenerWinDataTransfer(hNamedPipe);
+//        ClientDataTransfer dataTransfer = new ClientDataTransfer(this.pipeName);
         thread = new Thread(() -> callback.accept(dataTransfer));
         thread.setDaemon(true);
         thread.setName("Listener Thread");
@@ -57,6 +59,7 @@ public final class Listener {
         // TODO: ???
     }
 
+    @Deprecated
     private void CreateRequester() {
         String name = "\\\\.\\pipe\\requester" + pipeName;
         WinNT.HANDLE hNamedPipe = Kernel32.INSTANCE.CreateNamedPipe(

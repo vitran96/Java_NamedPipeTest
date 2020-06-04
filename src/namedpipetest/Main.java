@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         String pipeName = "pipetestonjava";
         if (args.length > 0)
             pipeName = args[0];
@@ -29,6 +29,8 @@ public class Main {
         listenerThread.setDaemon(true);
         listenerThread.setName("Listener thread");
         listenerThread.start();
+
+        Thread.sleep(5000);
 
         Client client = new Client(pipeName);
         client.Connect();

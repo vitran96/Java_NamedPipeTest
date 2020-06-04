@@ -23,7 +23,7 @@ public final class Server {
 //        }
     }
 
-    public void Connected(DataTransfer dataTransfer) {
+    public void Connected(ClientDataTransfer dataTransfer) {
 //        this.requester = new CustomRequester(dataTransfer);
         this.isConnected = true;
     }
