@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "libs/jna/jna-5.5.0.jar",
+        "libs/jna/jna-platform-5.5.0.jar"
+    ]
+}
