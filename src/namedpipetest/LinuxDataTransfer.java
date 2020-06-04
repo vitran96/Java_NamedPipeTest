@@ -1,30 +1,24 @@
 package namedpipetest;
 
-import com.sun.jna.platform.win32.WinNT;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class GenericDataTransfer implements DataTransfer {
+public final class LinuxDataTransfer implements DataTransfer {
 
-//    private WinNT.HANDLE pipe;
-
-    private RandomAccessFile file;
+    private RandomAccessFile fileToSendTo;
+    private RandomAccessFile fileToReceiveFrom;
     private final Object lock = new Object();
-
-    public GenericDataTransfer(WinNT.HANDLE pipe) {
-//        this.pipe = pipe;
-    }
 
     @Override
     protected void finalize() throws Throwable {
-        file.close();
+        fileToSendTo.close();
         super.finalize();
     }
 
-    public GenericDataTransfer(String pipeName) throws FileNotFoundException {
-        this.file = new RandomAccessFile(pipeName, "rw");
+    public LinuxDataTransfer(String pipeNameToSendTo, String pipeNameToReceiveFrom) throws FileNotFoundException {
+        this.fileToSendTo = new RandomAccessFile(pipeNameToSendTo, "rw");
+        this.fileToReceiveFrom = new RandomAccessFile(pipeNameToReceiveFrom, "r");
     }
 
     @Override
@@ -37,7 +31,7 @@ public class GenericDataTransfer implements DataTransfer {
                 System.arraycopy(lengthInBytes, 0, dataToSend, 0, lengthInBytes.length);
                 System.arraycopy(bytes, 0, dataToSend, lengthInBytes.length, bytes.length);
 
-                file.write(dataToSend);
+                fileToSendTo.write(dataToSend);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,11 +45,11 @@ public class GenericDataTransfer implements DataTransfer {
         try {
             synchronized (lock) {
                 byte[] lengthInBytes = new byte[4];
-                file.read(lengthInBytes, 0, lengthInBytes.length);
+                fileToReceiveFrom.read(lengthInBytes, 0, lengthInBytes.length);
 
                 int length = ByteUtil.bytesToInt(lengthInBytes);
                 byte[] receiveData = new byte[length];
-                file.read(receiveData, 0, length);
+                fileToReceiveFrom.read(receiveData, 0, length);
                 result = receiveData;
             }
         } catch (IOException e) {
@@ -64,5 +58,4 @@ public class GenericDataTransfer implements DataTransfer {
 
         return result;
     }
-
 }

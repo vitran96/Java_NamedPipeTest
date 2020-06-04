@@ -9,6 +9,8 @@ public final class Responder {
     public void DoServices(DataTransfer dataTransfer) {
         try {
             while (!isStopped) {
+
+                System.out.println("Receive data from client");
                 byte[] receiveData = dataTransfer.ReceiveData();
                 if (receiveData.length == 0)
                     continue;
@@ -28,7 +30,7 @@ public final class Responder {
                     replyData = ByteUtil.String2Bytes("Did you say this: " + message);
                 }
 
-
+                System.out.println("Sending data to client");
                 dataTransfer.SendData(replyData);
             }
         } catch (java.lang.Exception ex) {
