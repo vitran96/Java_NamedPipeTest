@@ -1,5 +1,8 @@
 echo "Start"
 
+echo "Remove possile existing 'out' and 'build'"
+rm -vfr out build
+
 echo "Make 'out' dir"
 mkdir out
 
@@ -15,7 +18,7 @@ echo "Make build dir"
 mkdir build
 
 echo "Packaging to *.jar"
-jar cMfv build/NamedPipeTest.jar -C out . -C libs/jna . -C resources .
+jar cMfv build/NamedPipeTest.jar -C out  . -C src/resources .
 
 echo "Change to 'libs/jna' directory"
 cd libs/jna
