@@ -9,7 +9,7 @@ public class Main {
         if (args.length > 0)
             pipeName = args[0];
 
-        int occurrences = 15;
+        int occurrences = 5;
         if (args.length > 1)
             occurrences = Integer.parseInt(args[1]);
 
@@ -34,5 +34,7 @@ public class Main {
         for (int i = 0; i < occurrences; i++) {
             client.SendThenReceiveMessage("Message number: " + i);
         }
+
+        client.SendThenReceiveMessage("end");
     }
 }

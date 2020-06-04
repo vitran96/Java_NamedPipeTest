@@ -7,13 +7,13 @@ import java.nio.charset.StandardCharsets;
 public final class ByteUtil {
     public static byte[] intToBytes(int value) {
         ByteBuffer buffer = ByteBuffer.allocate(4);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);// default is BIG_ENDIAN
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
         buffer.putInt(value);
         buffer.flip();
         return buffer.array();
     }
 
-    public static int getIntFromArrayWithLittleEndian(byte[] bytes) {
+    public static int bytesToInt(byte[] bytes) {
         ByteBuffer buffer = ByteBuffer.wrap(bytes);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         return buffer.getInt();
