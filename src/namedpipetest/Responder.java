@@ -10,11 +10,14 @@ public final class Responder {
         try {
             while (!isStopped) {
                 byte[] receiveData = dataTransfer.ReceiveData();
+                if (receiveData.length == 0)
+                    continue;
+
                 String message = ByteUtil.Bytes2String(receiveData);
 
                 System.out.println("Message from client: " + message);
 
-                byte[] replyData;
+                byte[] replyData = new byte[0];
 
                 if (message.equals("Hello Server!")) {
                     replyData = ByteUtil.String2Bytes("Hi Client!");
@@ -23,8 +26,8 @@ public final class Responder {
                     replyData = ByteUtil.String2Bytes("Bye!");
                 } else if (!message.isEmpty()) {
                     replyData = ByteUtil.String2Bytes("Did you say this: " + message);
-                } else
-                    replyData = ByteUtil.String2Bytes("Says some thing!!");
+                }
+
 
                 dataTransfer.SendData(replyData);
             }
