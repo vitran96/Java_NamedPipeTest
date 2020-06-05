@@ -1,7 +1,14 @@
 package namedpipetest;
 
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinBase;
+import com.sun.jna.platform.win32.WinNT;
+
+import java.awt.image.Kernel;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import static com.sun.jna.platform.win32.WinBase.INVALID_HANDLE_VALUE;
 
 public final class Client {
 
@@ -18,7 +25,7 @@ public final class Client {
             try {
                 this.dataTransfer = MakeDataTransfer();
                 isConnected = true;
-            } catch (FileNotFoundException ignored) {
+            } catch (Exception ignored) {
             }
         }
         System.out.println("Pipe client started");
@@ -43,7 +50,22 @@ public final class Client {
         DataTransfer dataTransfer;
         if (OsUtil.GetGeneralOsName().equals(OsUtil.WINDOWS)) {
 //            System.out.println("Pipe client for Windows");
-            dataTransfer = new PipeFileDataTransfer(pipeName);
+//            dataTransfer = new PipeFileDataTransfer(pipeName);
+            Kernel32.INSTANCE.WaitNamedPipe(pipeName, WinBase.NMPWAIT_WAIT_FOREVER);
+            WinNT.HANDLE hNamedPipe = Kernel32.INSTANCE.CreateFile(
+                pipeName
+                , WinNT.GENERIC_READ | WinNT.GENERIC_WRITE
+                , 0
+                , null
+                , WinNT.OPEN_EXISTING
+                , WinNT.FILE_FLAG_OVERLAPPED
+                , null
+            );
+
+            if (hNamedPipe == INVALID_HANDLE_VALUE)
+                throw new RuntimeException("Fail to connect named pipe file");
+
+            dataTransfer = new WinDataTransfer(hNamedPipe);
         } else {
 //            System.out.println("Pipe client for Linux");
 

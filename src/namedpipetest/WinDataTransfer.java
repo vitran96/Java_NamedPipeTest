@@ -14,6 +14,7 @@ public class WinDataTransfer implements DataTransfer {
 
     @Override
     protected void finalize() throws Throwable {
+        Kernel32.INSTANCE.CloseHandle(pipe);
         super.finalize();
     }
 
