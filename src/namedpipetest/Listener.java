@@ -22,7 +22,7 @@ public final class Listener {
         DataTransfer dataTransfer;
         try {
             dataTransfer = MakeDataTransfer();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
@@ -36,7 +36,7 @@ public final class Listener {
         // TODO: ???
     }
 
-    private DataTransfer MakeDataTransfer() throws IOException {
+    private DataTransfer MakeDataTransfer() throws IOException, InterruptedException {
         DataTransfer dataTransfer;
         if (OsUtil.GetGeneralOsName().equals(OsUtil.WINDOWS)) {
             System.out.println("Windows named pipe.");
@@ -61,8 +61,8 @@ public final class Listener {
             String pipeNameToSendTo = PipeConstant.SERVER_2_CLIENT_PREFIX + pipeName;
             String pipeNameToReceiveFrom = PipeConstant.CLIENT_2_SERVER_PREFIX + pipeName;
 
-            new ProcessBuilder("mkfifo", pipeNameToSendTo).start();
-            new ProcessBuilder("mkfifo", pipeNameToReceiveFrom).start();
+            new ProcessBuilder("mkfifo", pipeNameToSendTo).start().waitFor();
+            new ProcessBuilder("mkfifo", pipeNameToReceiveFrom).start().waitFor();
 
             dataTransfer = new LinuxDataTransfer(pipeNameToSendTo, pipeNameToReceiveFrom);
         }

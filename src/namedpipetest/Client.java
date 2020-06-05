@@ -50,9 +50,6 @@ public final class Client {
     public DataTransfer MakeDataTransfer() throws FileNotFoundException {
         DataTransfer dataTransfer;
         if (OsUtil.GetGeneralOsName().equals(OsUtil.WINDOWS)) {
-//            System.out.println("Pipe client for Windows");
-//            dataTransfer = new PipeFileDataTransfer(pipeName);
-//            Kernel32.INSTANCE.WaitNamedPipe(pipeName, WinBase.NMPWAIT_WAIT_FOREVER);
             WinNT.HANDLE hNamedPipe = Kernel32.INSTANCE.CreateFile(
                 pipeName
                 , WinNT.GENERIC_READ | WinNT.GENERIC_WRITE
